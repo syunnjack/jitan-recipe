@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!recipe) return { title: "レシピが見つかりません" };
 
   const title = `${recipe.title}｜${recipe.minutes}分・材料${recipe.ingredients.length}品`;
+  const image = `${site.url}/og/${recipe.id}`;
   return {
     title,
     description: recipe.description,
@@ -26,7 +27,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title,
       description: recipe.description,
       url: `${site.url}/recipe/${recipe.id}`,
+      images: [{ url: image, width: 1200, height: 630, alt: recipe.title }],
     },
+    twitter: { card: "summary_large_image", images: [image] },
   };
 }
 
@@ -47,6 +50,8 @@ export default async function RecipePage({ params }: { params: Params }) {
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.description,
+    // image は Recipe スキーマの必須項目。写真がないため next/og でカード画像を生成している
+    image: [`${site.url}/og/${recipe.id}`],
     inLanguage: "ja",
     recipeCategory: recipe.category,
     recipeCuisine: "日本",
@@ -65,6 +70,7 @@ export default async function RecipePage({ params }: { params: Params }) {
       "@type": "HowToStep",
       position: i + 1,
       text: s,
+      url: `${site.url}/recipe/${recipe.id}#step-${i + 1}`,
     })),
     author: { "@type": "Organization", name: site.name },
   };
@@ -193,7 +199,8 @@ export default async function RecipePage({ params }: { params: Params }) {
         <h2 className="mb-3 text-xl font-bold">作り方</h2>
         <ol className="space-y-4">
           {recipe.steps.map((step, i) => (
-            <li key={i} className="flex gap-3">
+            // id は構造化データの HowToStep.url が指すアンカー
+            <li key={i} id={`step-${i + 1}`} className="flex scroll-mt-4 gap-3">
               <span
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
                 style={{ background: "var(--accent)" }}
