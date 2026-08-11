@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image" },
   alternates: { canonical: "/" },
+  verification: {
+    // Google Search Console のサイト所有権確認（削除すると確認が外れる）
+    google: "rXC-95Nht0TXH4SKWRGhBgzAyFyerQdVgHfPj6MUhUY",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
