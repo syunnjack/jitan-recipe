@@ -1004,6 +1004,15 @@ export function getAllRecipes(): Recipe[] {
   return recipes;
 }
 
+/**
+ * 構造化データ・OGP に渡す画像の絶対URL。
+ * 完成写真があればそれを、なければ next/og の生成カードを使う。
+ * Recipe スキーマの image は必須項目なので、必ず何かを返す。
+ */
+export function getImageUrl(recipe: Recipe, siteUrl: string): string {
+  return recipe.photo ? `${siteUrl}${recipe.photo.src}` : `${siteUrl}/og/${recipe.id}`;
+}
+
 export function getRecipe(id: string): Recipe | undefined {
   return recipes.find((r) => r.id === id);
 }

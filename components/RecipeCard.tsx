@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Recipe } from "@/lib/types";
 
@@ -13,9 +14,23 @@ const methodEmoji: Record<string, string> = {
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
   return (
     <article
-      className="group rounded-xl border p-4 transition-colors hover:border-[var(--accent)]"
+      className="group overflow-hidden rounded-xl border transition-colors hover:border-[var(--accent)]"
       style={{ borderColor: "var(--line)" }}
     >
+      {recipe.photo && (
+        <Link href={`/recipe/${recipe.id}`} className="block">
+          <Image
+            src={recipe.photo.src}
+            alt={recipe.photo.alt}
+            width={recipe.photo.width}
+            height={recipe.photo.height}
+            sizes="(min-width: 640px) 400px, 100vw"
+            className="aspect-[16/9] w-full object-cover"
+          />
+        </Link>
+      )}
+
+      <div className="p-4">
       <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
         <span
           className="rounded-full px-2 py-0.5 font-bold"
@@ -53,6 +68,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
           <dd className="inline font-medium">{recipe.cost}円</dd>
         </div>
       </dl>
+      </div>
     </article>
   );
 }

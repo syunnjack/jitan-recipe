@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import RecipeCard from "@/components/RecipeCard";
-import { getAllRecipes, getRecipe, getRelated } from "@/lib/recipes";
+import { getAllRecipes, getImageUrl, getRecipe, getRelated } from "@/lib/recipes";
 import { site } from "@/lib/site";
 
 type Params = Promise<{ id: string }>;
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!recipe) return { title: "レシピが見つかりません" };
 
   const title = `${recipe.title}｜${recipe.minutes}分・材料${recipe.ingredients.length}品`;
-  const image = `${site.url}/og/${recipe.id}`;
+  const image = getImageUrl(recipe, site.url);
   return {
     title,
     description: recipe.description,
@@ -50,8 +51,8 @@ export default async function RecipePage({ params }: { params: Params }) {
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.description,
-    // image は Recipe スキーマの必須項目。写真がないため next/og でカード画像を生成している
-    image: [`${site.url}/og/${recipe.id}`],
+    // image は Recipe スキーマの必須項目。完成写真がなければ生成カードにフォールバックする
+    image: [getImageUrl(recipe, site.url)],
     inLanguage: "ja",
     recipeCategory: recipe.category,
     recipeCuisine: "日本",
@@ -115,6 +116,37 @@ export default async function RecipePage({ params }: { params: Params }) {
           {recipe.category}
         </Link>
       </nav>
+
+      {recipe.photo && (
+        <figure className="-mx-4 sm:mx-0">
+          <Image
+            src={recipe.photo.src}
+            alt={recipe.photo.alt}
+            width={recipe.photo.width}
+            height={recipe.photo.height}
+            priority
+            sizes="(min-width: 640px) 768px, 100vw"
+            className="h-auto w-full sm:rounded-xl"
+          />
+          {recipe.photo.credit && (
+            <figcaption className="mt-2 px-4 text-xs sm:px-0" style={{ color: "var(--muted)" }}>
+              Photo:{" "}
+              {recipe.photo.credit.url ? (
+                <a
+                  href={recipe.photo.credit.url}
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                  className="underline"
+                >
+                  {recipe.photo.credit.name}
+                </a>
+              ) : (
+                recipe.photo.credit.name
+              )}
+            </figcaption>
+          )}
+        </figure>
+      )}
 
       <header>
         <h1 className="text-2xl font-bold leading-tight sm:text-3xl">{recipe.title}</h1>

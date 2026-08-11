@@ -8,6 +8,17 @@ export type Category =
 
 export type Method = "レンジ" | "フライパン" | "鍋" | "トースター" | "混ぜるだけ" | "炊飯器";
 
+export type Photo = {
+  /** public/ からのパス（例: /recipes/renji-mabo-nasu.jpg） */
+  src: string;
+  /** 料理が分かる代替テキスト。「料理の写真」のような無内容な文言にしない */
+  alt: string;
+  width: number;
+  height: number;
+  /** ライセンス表示が必要な素材のみ設定する。自前撮影なら不要 */
+  credit?: { name: string; url?: string };
+};
+
 export type Ingredient = {
   name: string;
   amount: string;
@@ -29,6 +40,8 @@ export type Recipe = {
   /** 1人前あたりの目安金額（円） */
   cost: number;
   tags: string[];
+  /** 完成写真。未設定なら next/og の生成カードにフォールバックする */
+  photo?: Photo;
   ingredients: Ingredient[];
   steps: string[];
   tips: string[];
