@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #fffdf9;
+  --fg: #24211d;
+  --muted: #6b6357;
+  --line: #e8e0d4;
+  --accent: #c2410c;
+  --accent-soft: #fff1e7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1815;
+    --fg: #f2ede5;
+    --muted: #a9a094;
+    --line: #363028;
+    --accent: #fb923c;
+    --accent-soft: #2a2018;
+  }
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+  line-height: 1.75;
+}
+
+a {
+  color: inherit;
+}
+
+/* 印刷時はナビ・フィルタ等を落として、手順だけの1枚に */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
