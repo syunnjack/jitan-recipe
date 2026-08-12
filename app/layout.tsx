@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import { site } from "@/lib/site";
 import "./globals.css";
+
+// Measurement ID for the GA4 property "jitan-recipe (https://jitan-recipe.vercel.app)" (549625527).
+const gaMeasurementId = "G-DVN33XWXVD";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -91,6 +95,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </p>
           </div>
         </footer>
+
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaMeasurementId}');`}
+        </Script>
       </body>
     </html>
   );
